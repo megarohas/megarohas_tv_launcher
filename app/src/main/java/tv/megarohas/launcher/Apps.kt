@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import java.text.Collator
 import java.util.Locale
@@ -12,12 +15,14 @@ data class AppEntry(
     val label: String,
     val packageName: String,
     val banner: Drawable?,
-    val icon: Drawable
+    val icon: Drawable,
+    val accent: Int
 )
 
 object Apps {
     private const val PREFS = "launcher"
     private const val KEY_HIDDEN = "hidden"
+    private const val DEFAULT_ACCENT = 0xFF4A6E9C.toInt()
 
     fun hidden(ctx: Context): Set<String> =
         ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -39,16 +44,55 @@ object Apps {
                 val ai = ri.activityInfo ?: continue
                 val pkg = ai.packageName
                 if (pkg == ctx.packageName || seen.containsKey(pkg)) continue
+                val banner = if (category == Intent.CATEGORY_LEANBACK_LAUNCHER) loadBanner(pm, ri) else null
+                val icon = ri.loadIcon(pm)
                 seen[pkg] = AppEntry(
                     label = ri.loadLabel(pm)?.toString() ?: pkg,
                     packageName = pkg,
-                    banner = if (category == Intent.CATEGORY_LEANBACK_LAUNCHER) loadBanner(pm, ri) else null,
-                    icon = ri.loadIcon(pm)
+                    banner = banner,
+                    icon = icon,
+                    accent = accentOf(banner ?: icon)
                 )
             }
         }
         val collator = Collator.getInstance(Locale.getDefault())
         return seen.values.sortedWith(compareBy(collator) { it.label.lowercase() })
+    }
+
+    /** Доминантный цвет артворка: среднее с весом по насыщенности, слегка усиленное. */
+    private fun accentOf(d: Drawable): Int = try {
+        val w = 24
+        val h = 14
+        val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        d.setBounds(0, 0, w, h)
+        d.draw(Canvas(bmp))
+        val px = IntArray(w * h)
+        bmp.getPixels(px, 0, w, 0, 0, w, h)
+        bmp.recycle()
+        val hsv = FloatArray(3)
+        var sr = 0.0
+        var sg = 0.0
+        var sb = 0.0
+        var sw = 0.0
+        for (p in px) {
+            if (p ushr 24 < 0x80) continue
+            Color.colorToHSV(p, hsv)
+            val weight = hsv[1] * hsv[2] + 0.03f
+            sr += Color.red(p) * weight
+            sg += Color.green(p) * weight
+            sb += Color.blue(p) * weight
+            sw += weight
+        }
+        if (sw <= 0) DEFAULT_ACCENT else {
+            Color.colorToHSV(
+                Color.rgb((sr / sw).toInt(), (sg / sw).toInt(), (sb / sw).toInt()), hsv
+            )
+            hsv[1] = (hsv[1] * 1.35f).coerceAtMost(1f)
+            hsv[2] = hsv[2].coerceAtLeast(0.55f)
+            Color.HSVToColor(hsv)
+        }
+    } catch (_: Exception) {
+        DEFAULT_ACCENT
     }
 
     private fun loadBanner(pm: PackageManager, ri: ResolveInfo): Drawable? = try {

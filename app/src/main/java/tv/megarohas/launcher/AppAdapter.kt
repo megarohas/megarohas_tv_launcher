@@ -1,5 +1,10 @@
 package tv.megarohas.launcher
 
+import android.graphics.Bitmap
+import android.graphics.BlurMaskFilter
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.RectF
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,6 +43,7 @@ class AppAdapter(
 ) : RecyclerView.Adapter<AppAdapter.Holder>() {
 
     private val items = mutableListOf<AppEntry>()
+    private val glowCache = HashMap<Int, Bitmap>()
 
     fun submit(list: List<AppEntry>) {
         items.clear()
@@ -47,6 +53,7 @@ class AppAdapter(
 
     class Holder(v: View) : RecyclerView.ViewHolder(v) {
         val card: View = v.findViewById(R.id.card)
+        val glow: ImageView = v.findViewById(R.id.glow)
         val bannerView: ImageView = v.findViewById(R.id.banner)
         val iconView: ImageView = v.findViewById(R.id.icon)
         val labelView: TextView = v.findViewById(R.id.label)
@@ -56,12 +63,15 @@ class AppAdapter(
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_app, parent, false)
         val h = Holder(v)
         h.card.clipToOutline = true
+        h.glow.scaleX = 1.35f
+        h.glow.scaleY = 1.8f
         val dp = parent.resources.displayMetrics.density
         v.setOnFocusChangeListener { view, focused ->
             val s = if (focused) 1.12f else 1f
             view.animate().scaleX(s).scaleY(s).setDuration(150).start()
             view.translationZ = if (focused) 12f * dp else 0f
             h.card.animate().translationZ(if (focused) 6f * dp else 0f).setDuration(150).start()
+            h.glow.animate().alpha(if (focused) 0.85f else 0f).setDuration(if (focused) 220L else 150L).start()
             h.labelView.animate().alpha(if (focused) 1f else 0.55f).setDuration(150).start()
         }
         return h
@@ -78,6 +88,8 @@ class AppAdapter(
             h.iconView.visibility = View.VISIBLE
             h.iconView.setImageDrawable(app.icon)
         }
+        h.glow.setImageBitmap(glowBitmap(app.accent))
+        h.glow.alpha = if (h.itemView.isFocused) 0.85f else 0f
         h.labelView.text = app.label
         h.labelView.alpha = if (h.itemView.isFocused) 1f else 0.55f
         h.itemView.setOnClickListener { onClick(app) }
@@ -85,4 +97,17 @@ class AppAdapter(
     }
 
     override fun getItemCount() = items.size
+
+    /** Мягкое размытое гало в акцентном цвете; рисуется один раз на цвет. */
+    private fun glowBitmap(color: Int): Bitmap = glowCache.getOrPut(color) {
+        val w = 120
+        val h = 72
+        val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            this.color = color
+            maskFilter = BlurMaskFilter(16f, BlurMaskFilter.Blur.NORMAL)
+        }
+        Canvas(bmp).drawRoundRect(RectF(24f, 20f, 96f, 52f), 10f, 10f, paint)
+        bmp
+    }
 }

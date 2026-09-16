@@ -11,25 +11,40 @@
     android:clipToPadding="false">
 
     <FrameLayout
-        android:id="@+id/card"
         android:layout_width="156dp"
         android:layout_height="88dp"
-        android:background="@drawable/card_bg"
-        android:outlineProvider="background">
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <ImageView
-            android:id="@+id/banner"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
+            android:id="@+id/glow"
+            android:layout_width="156dp"
+            android:layout_height="88dp"
+            android:scaleType="fitXY"
+            android:alpha="0"
             android:importantForAccessibility="no" />
 
-        <ImageView
-            android:id="@+id/icon"
-            android:layout_width="52dp"
-            android:layout_height="52dp"
-            android:layout_gravity="center"
-            android:importantForAccessibility="no" />
+        <FrameLayout
+            android:id="@+id/card"
+            android:layout_width="156dp"
+            android:layout_height="88dp"
+            android:background="@drawable/card_bg"
+            android:outlineProvider="background">
+
+            <ImageView
+                android:id="@+id/banner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:importantForAccessibility="no" />
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no" />
+        </FrameLayout>
     </FrameLayout>
 
     <TextView
