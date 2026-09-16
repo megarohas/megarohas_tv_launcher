@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingStart="48dp"
-    android:paddingEnd="48dp"
-    android:paddingTop="28dp"
-    android:clipChildren="false"
-    android:clipToPadding="false">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="48dp"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:clipChildren="false"
-        android:clipToPadding="false">
+        android:gravity="center_vertical">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -84,9 +79,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="88dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="40dp"
-        android:clipChildren="false"
+        android:paddingStart="50dp"
+        android:paddingEnd="50dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="48dp"
         android:clipToPadding="false"
+        android:requiresFadingEdge="vertical"
+        android:fadingEdgeLength="64dp"
         android:overScrollMode="never" />
 </FrameLayout>
