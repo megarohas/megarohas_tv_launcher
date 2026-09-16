@@ -22,15 +22,19 @@ fun View.applyFocusScale(scale: Float = 1.15f) {
 }
 
 /**
- * Пофейдовое растворение рядов у верхней кромки: каждый элемент гаснет
- * ровно в процессе пересечения верха списка (высота элемента = зона фейда),
- * вместо жёсткой обрезки или «уползания под линию».
+ * Пофейдовое растворение рядов у кромок: элемент гаснет ровно в процессе
+ * пересечения верха списка и проявляется, выплывая из-за нижнего края
+ * (высота элемента = зона фейда), вместо жёсткой обрезки.
  */
 fun RecyclerView.enableEdgeFade() {
     val apply = {
         for (i in 0 until childCount) {
             val c = getChildAt(i)
-            if (c.height > 0) c.alpha = (c.bottom.toFloat() / c.height.toFloat()).coerceIn(0f, 1f)
+            if (c.height > 0) {
+                val top = c.bottom.toFloat() / c.height.toFloat()
+                val bottom = (height - c.top).toFloat() / c.height.toFloat()
+                c.alpha = minOf(top, bottom).coerceIn(0f, 1f)
+            }
         }
     }
     addOnScrollListener(object : RecyclerView.OnScrollListener() {
