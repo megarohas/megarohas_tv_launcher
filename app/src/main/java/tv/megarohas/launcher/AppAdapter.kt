@@ -8,6 +8,7 @@ import android.graphics.RectF
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +19,24 @@ fun View.applyFocusScale(scale: Float = 1.15f) {
         val s = if (focused) scale else 1f
         v.animate().scaleX(s).scaleY(s).setDuration(140).start()
     }
+}
+
+/**
+ * Пофейдовое растворение рядов у верхней кромки: каждый элемент гаснет
+ * ровно в процессе пересечения верха списка (высота элемента = зона фейда),
+ * вместо жёсткой обрезки или «уползания под линию».
+ */
+fun RecyclerView.enableEdgeFade() {
+    val apply = {
+        for (i in 0 until childCount) {
+            val c = getChildAt(i)
+            if (c.height > 0) c.alpha = (c.bottom.toFloat() / c.height.toFloat()).coerceIn(0f, 1f)
+        }
+    }
+    addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) = apply()
+    })
+    viewTreeObserver.addOnGlobalLayoutListener { apply() }
 }
 
 /**
@@ -55,7 +74,7 @@ class AppAdapter(
     }
 
     class Holder(v: View) : RecyclerView.ViewHolder(v) {
-        val card: View = v.findViewById(R.id.card)
+        val card: FrameLayout = v.findViewById(R.id.card)
         val glow: ImageView = v.findViewById(R.id.glow)
         val bannerView: ImageView = v.findViewById(R.id.banner)
         val iconView: ImageView = v.findViewById(R.id.icon)
@@ -91,9 +110,8 @@ class AppAdapter(
             h.iconView.visibility = View.VISIBLE
             h.iconView.setImageDrawable(app.icon)
         }
-        h.card.setBackgroundResource(
-            if (position == movingPos) R.drawable.card_bg_moving else R.drawable.card_bg
-        )
+        h.card.foreground = if (position == movingPos)
+            h.card.context.getDrawable(R.drawable.card_stroke_moving) else null
         h.glow.setImageBitmap(glowBitmap(app.accent))
         h.glow.alpha = if (h.itemView.isFocused) 0.85f else 0f
         h.labelView.text = app.label

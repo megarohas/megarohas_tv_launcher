@@ -55,6 +55,7 @@ class MainActivity : Activity() {
         )
         grid.layoutManager = GridLayoutManager(this, COLUMNS)
         grid.adapter = adapter
+        grid.enableEdgeFade()
 
         findViewById<ImageButton>(R.id.btn_settings).apply {
             applyFocusScale(1.1f)
@@ -172,7 +173,7 @@ class MainActivity : Activity() {
 
     private fun styleMovingCard(pos: Int, moving: Boolean) {
         val vh = grid.findViewHolderForAdapterPosition(pos) as? AppAdapter.Holder ?: return
-        vh.card.setBackgroundResource(if (moving) R.drawable.card_bg_moving else R.drawable.card_bg)
+        vh.card.foreground = if (moving) getDrawable(R.drawable.card_stroke_moving) else null
     }
 
     private fun refresh() {
