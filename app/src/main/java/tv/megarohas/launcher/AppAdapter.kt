@@ -15,6 +15,23 @@ fun View.applyFocusScale(scale: Float = 1.15f) {
     }
 }
 
+/**
+ * Выполняет обновление адаптера, сохраняя фокус на той же позиции сетки
+ * (или ближайшей существующей), если фокус был внутри неё.
+ */
+fun RecyclerView.updateKeepingFocus(update: () -> Unit) {
+    val pos = focusedChild?.let { getChildAdapterPosition(it) } ?: RecyclerView.NO_POSITION
+    update()
+    val count = adapter?.itemCount ?: 0
+    if (pos != RecyclerView.NO_POSITION && count > 0) {
+        val p = pos.coerceAtMost(count - 1)
+        post {
+            scrollToPosition(p)
+            post { findViewHolderForAdapterPosition(p)?.itemView?.requestFocus() }
+        }
+    }
+}
+
 class AppAdapter(
     private val onClick: (AppEntry) -> Unit,
     private val onLongClick: (AppEntry) -> Unit

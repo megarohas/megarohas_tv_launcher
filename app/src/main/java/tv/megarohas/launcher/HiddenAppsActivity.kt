@@ -42,9 +42,12 @@ class HiddenAppsActivity : Activity() {
         Thread {
             val list = Apps.hiddenEntries(this)
             runOnUiThread {
-                adapter.submit(list)
+                val hadGridFocus = grid.focusedChild != null
+                grid.updateKeepingFocus { adapter.submit(list) }
                 empty.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
-                if (list.isNotEmpty()) grid.post { grid.getChildAt(0)?.requestFocus() }
+                if (!hadGridFocus && list.isNotEmpty()) {
+                    grid.post { grid.getChildAt(0)?.requestFocus() }
+                }
             }
         }.start()
     }

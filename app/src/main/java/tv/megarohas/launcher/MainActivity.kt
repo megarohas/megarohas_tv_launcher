@@ -115,7 +115,9 @@ class MainActivity : Activity() {
         Thread {
             val list = Apps.visible(this)
             runOnUiThread {
-                adapter.submit(list)
+                val hadGridFocus = grid.focusedChild != null
+                grid.updateKeepingFocus { adapter.submit(list) }
+                if (hadGridFocus) needInitialFocus = false
                 if (needInitialFocus && list.isNotEmpty()) {
                     needInitialFocus = false
                     grid.post { grid.getChildAt(0)?.requestFocus() }
