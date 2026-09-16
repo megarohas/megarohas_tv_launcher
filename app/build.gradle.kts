@@ -11,8 +11,8 @@ android {
         applicationId = "tv.megarohas.launcher"
         minSdk = 21
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 5
+        versionName = "1.4"
     }
 
     buildTypes {
