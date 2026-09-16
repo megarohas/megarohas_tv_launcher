@@ -17,28 +17,40 @@
         android:clipChildren="false"
         android:clipToPadding="false">
 
-        <ImageButton
-            android:id="@+id/btn_hidden"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="9dp"
-            android:focusable="true"
-            android:background="@drawable/icon_button_bg"
-            android:src="@drawable/ic_eye_off"
-            android:tint="@color/icon_tint"
-            android:contentDescription="@string/hidden_title" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/pill_bg"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp">
 
-        <ImageButton
-            android:id="@+id/btn_settings"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="14dp"
-            android:padding="9dp"
-            android:focusable="true"
-            android:background="@drawable/icon_button_bg"
-            android:src="@drawable/ic_settings"
-            android:tint="@color/icon_tint"
-            android:contentDescription="@string/settings" />
+            <ImageButton
+                android:id="@+id/btn_hidden"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="8dp"
+                android:focusable="true"
+                android:background="@drawable/icon_button_bg"
+                android:src="@drawable/ic_eye_off"
+                android:tint="@color/icon_tint"
+                android:contentDescription="@string/hidden_title" />
+
+            <ImageButton
+                android:id="@+id/btn_settings"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="4dp"
+                android:padding="8dp"
+                android:focusable="true"
+                android:background="@drawable/icon_button_bg"
+                android:src="@drawable/ic_settings"
+                android:tint="@color/icon_tint"
+                android:contentDescription="@string/settings" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
