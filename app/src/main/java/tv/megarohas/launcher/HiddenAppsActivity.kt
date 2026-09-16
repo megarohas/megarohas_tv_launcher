@@ -1,13 +1,21 @@
 package tv.megarohas.launcher
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
+/**
+ * «Папка» скрытых приложений: обычное нажатие запускает приложение,
+ * удержание OK открывает меню с возвратом на главный экран.
+ */
 class HiddenAppsActivity : Activity() {
 
     private lateinit var adapter: AppAdapter
@@ -23,20 +31,45 @@ class HiddenAppsActivity : Activity() {
 
         adapter = AppAdapter(
             onClick = { app ->
-                Apps.setHidden(this, app.packageName, false)
-                Toast.makeText(
-                    this,
-                    getString(R.string.unhidden_toast, app.label),
-                    Toast.LENGTH_SHORT
-                ).show()
-                refresh()
+                if (!Apps.launch(this, app)) {
+                    Toast.makeText(this, R.string.launch_failed, Toast.LENGTH_SHORT).show()
+                }
             },
-            onLongClick = { }
+            onLongClick = { app -> showAppMenu(app) }
         )
         grid.layoutManager = GridLayoutManager(this, 5)
         grid.adapter = adapter
         grid.enableEdgeFade()
         refresh()
+    }
+
+    private fun showAppMenu(app: AppEntry) {
+        val actions = arrayOf(
+            getString(R.string.menu_unhide),
+            getString(R.string.menu_info)
+        )
+        AlertDialog.Builder(this)
+            .setTitle(app.label)
+            .setItems(actions) { _, which ->
+                when (which) {
+                    0 -> {
+                        Apps.setHidden(this, app.packageName, false)
+                        Toast.makeText(
+                            this,
+                            getString(R.string.unhidden_toast, app.label),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        refresh()
+                    }
+                    1 -> startActivity(
+                        Intent(
+                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            Uri.parse("package:" + app.packageName)
+                        )
+                    )
+                }
+            }
+            .show()
     }
 
     private fun refresh() {
