@@ -168,7 +168,22 @@ class MainActivity : Activity() {
         val to = (from + delta).coerceIn(0, adapter.itemCount - 1)
         if (to == from) return
         adapter.moveItem(from, to)
-        grid.smoothScrollToPosition(to)
+        // Держим ряд перемещаемой карточки в комфортной зоне: не в фейде у
+        // верхней кромки и не за нижним краем. RecyclerView сам ограничит
+        // скролл границами контента.
+        grid.post {
+            val v = grid.findViewHolderForAdapterPosition(to)?.itemView
+            if (v == null) {
+                grid.scrollToPosition(to)
+                return@post
+            }
+            val topLimit = v.height / 2
+            val bottomLimit = grid.height - v.height / 4
+            when {
+                v.top < topLimit -> grid.smoothScrollBy(0, v.top - topLimit)
+                v.bottom > bottomLimit -> grid.smoothScrollBy(0, v.bottom - bottomLimit)
+            }
+        }
     }
 
     private fun styleMovingCard(pos: Int, moving: Boolean) {
