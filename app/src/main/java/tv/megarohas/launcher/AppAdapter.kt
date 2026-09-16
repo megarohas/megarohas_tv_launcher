@@ -31,9 +31,10 @@ fun RecyclerView.enableEdgeFade() {
         for (i in 0 until childCount) {
             val c = getChildAt(i)
             if (c.height > 0) {
-                val top = c.bottom.toFloat() / c.height.toFloat()
-                val bottom = (height - c.top).toFloat() / c.height.toFloat()
-                c.alpha = minOf(top, bottom).coerceIn(0f, 1f)
+                val top = (c.bottom.toFloat() / c.height.toFloat()).coerceIn(0f, 1f)
+                // Нижняя кромка гаснет по квадрату - невыплывший ряд заметно бледнее.
+                val b = ((height - c.top).toFloat() / c.height.toFloat()).coerceIn(0f, 1f)
+                c.alpha = minOf(top, b * b)
             }
         }
     }
