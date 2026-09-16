@@ -90,8 +90,8 @@ class AppAdapter(
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_app, parent, false)
         val h = Holder(v)
         h.card.clipToOutline = true
-        h.glow.scaleX = 1.35f
-        h.glow.scaleY = 1.8f
+        h.glow.scaleX = 1.8f
+        h.glow.scaleY = 2.4f
         val dp = parent.resources.displayMetrics.density
         v.setOnFocusChangeListener { view, focused ->
             val s = if (focused) 1.12f else 1f
@@ -139,16 +139,20 @@ class AppAdapter(
         notifyItemMoved(from, to)
     }
 
-    /** Мягкое размытое гало в акцентном цвете; рисуется один раз на цвет. */
+    /**
+     * Мягкое размытое гало в акцентном цвете; рисуется один раз на цвет.
+     * Поля битмапа не меньше двух радиусов блюра, чтобы хвост размытия
+     * затухал до нуля внутри битмапа и не обрезался его краем.
+     */
     private fun glowBitmap(color: Int): Bitmap = glowCache.getOrPut(color) {
-        val w = 120
-        val h = 72
+        val w = 160
+        val h = 96
         val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             this.color = color
             maskFilter = BlurMaskFilter(16f, BlurMaskFilter.Blur.NORMAL)
         }
-        Canvas(bmp).drawRoundRect(RectF(24f, 20f, 96f, 52f), 10f, 10f, paint)
+        Canvas(bmp).drawRoundRect(RectF(44f, 32f, 116f, 64f), 10f, 10f, paint)
         bmp
     }
 }
