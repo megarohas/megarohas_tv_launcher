@@ -35,6 +35,7 @@ class HiddenAppsActivity : Activity() {
         )
         grid.layoutManager = GridLayoutManager(this, 5)
         grid.adapter = adapter
+        grid.enableEdgeFade()
         refresh()
     }
 

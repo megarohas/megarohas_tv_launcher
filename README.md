@@ -6,6 +6,9 @@ A minimal Apple TV-style launcher for Android TV. Pure Kotlin + RecyclerView —
 
 - **tvOS-style home screen** — grid of 16:9 banner cards with smooth focus scaling, dark gradient background
 - **Hide apps** — long-press a card → *Hide*; bring them back on the hidden apps screen (eye button in the corner)
+- **Manual reordering** — long-press a card → *Move*, reposition with the arrow keys, OK to save
+- **Focus glow** — a soft halo in the dominant color of the app artwork appears under the focused card
+- **Per-item edge fade** — rows dissolve smoothly at the top edge while scrolling instead of clipping
 - **Home button override** — Projectivy-style accessibility service that puts this launcher on top whenever the stock Google TV home appears (HOME press, boot). No system packages get disabled
 - **Clock & date** in the corner
 - **Settings button** — opens the standard system settings, nothing is reimplemented
