@@ -45,6 +45,9 @@ class AppAdapter(
     private val items = mutableListOf<AppEntry>()
     private val glowCache = HashMap<Int, Bitmap>()
 
+    /** Позиция карточки, которую сейчас перетаскивают; -1 если нет. */
+    var movingPos: Int = -1
+
     fun submit(list: List<AppEntry>) {
         items.clear()
         items.addAll(list)
@@ -88,6 +91,9 @@ class AppAdapter(
             h.iconView.visibility = View.VISIBLE
             h.iconView.setImageDrawable(app.icon)
         }
+        h.card.setBackgroundResource(
+            if (position == movingPos) R.drawable.card_bg_moving else R.drawable.card_bg
+        )
         h.glow.setImageBitmap(glowBitmap(app.accent))
         h.glow.alpha = if (h.itemView.isFocused) 0.85f else 0f
         h.labelView.text = app.label
@@ -97,6 +103,18 @@ class AppAdapter(
     }
 
     override fun getItemCount() = items.size
+
+    fun indexOf(pkg: String): Int = items.indexOfFirst { it.packageName == pkg }
+
+    fun currentPackages(): List<String> = items.map { it.packageName }
+
+    fun moveItem(from: Int, to: Int) {
+        if (from == to || from !in items.indices || to !in items.indices) return
+        val item = items.removeAt(from)
+        items.add(to, item)
+        if (movingPos == from) movingPos = to
+        notifyItemMoved(from, to)
+    }
 
     /** Мягкое размытое гало в акцентном цвете; рисуется один раз на цвет. */
     private fun glowBitmap(color: Int): Bitmap = glowCache.getOrPut(color) {

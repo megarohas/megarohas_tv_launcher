@@ -22,6 +22,7 @@ data class AppEntry(
 object Apps {
     private const val PREFS = "launcher"
     private const val KEY_HIDDEN = "hidden"
+    private const val KEY_ORDER = "order"
     private const val DEFAULT_ACCENT = 0xFF4A6E9C.toInt()
 
     fun hidden(ctx: Context): Set<String> =
@@ -33,6 +34,15 @@ object Apps {
         if (hide) set.add(pkg) else set.remove(pkg)
         ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             .edit().putStringSet(KEY_HIDDEN, set).apply()
+    }
+
+    fun savedOrder(ctx: Context): List<String> =
+        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getString(KEY_ORDER, null)?.split("\n")?.filter { it.isNotEmpty() } ?: emptyList()
+
+    fun saveOrder(ctx: Context, packages: List<String>) {
+        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .edit().putString(KEY_ORDER, packages.joinToString("\n")).apply()
     }
 
     fun all(ctx: Context): List<AppEntry> {
@@ -56,7 +66,14 @@ object Apps {
             }
         }
         val collator = Collator.getInstance(Locale.getDefault())
-        return seen.values.sortedWith(compareBy(collator) { it.label.lowercase() })
+        val posMap = HashMap<String, Int>()
+        savedOrder(ctx).forEachIndexed { i, p -> posMap[p] = i }
+        return seen.values.sortedWith(Comparator { a, b ->
+            val ia = posMap[a.packageName] ?: Int.MAX_VALUE
+            val ib = posMap[b.packageName] ?: Int.MAX_VALUE
+            if (ia != ib) Integer.compare(ia, ib)
+            else collator.compare(a.label.lowercase(), b.label.lowercase())
+        })
     }
 
     /** Доминантный цвет артворка: среднее с весом по насыщенности, слегка усиленное. */

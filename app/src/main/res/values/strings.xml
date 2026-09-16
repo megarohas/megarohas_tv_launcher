@@ -5,10 +5,12 @@
     <string name="hidden_title">Hidden apps</string>
     <string name="hidden_hint">Click an app to bring it back to the home screen</string>
     <string name="no_hidden">No hidden apps</string>
+    <string name="menu_move">Move</string>
     <string name="menu_hide">Hide</string>
     <string name="menu_info">App info</string>
     <string name="menu_uninstall">Uninstall</string>
     <string name="launch_failed">Failed to open</string>
+    <string name="move_hint">Move with the arrow keys, press OK when done</string>
     <string name="unhidden_toast">%1$s is back on the home screen</string>
     <string name="home_override">Home button override</string>
     <string name="home_override_desc">Opens Mega TV Launcher whenever the stock Google TV home screen appears (HOME button, boot). The stock launcher stays enabled as a safety fallback.</string>
