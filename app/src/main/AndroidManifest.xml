@@ -40,5 +40,18 @@
         <activity
             android:name=".HiddenAppsActivity"
             android:exported="false" />
+
+        <service
+            android:name=".HomeWatchService"
+            android:exported="false"
+            android:label="@string/home_override"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/home_watch_config" />
+        </service>
     </application>
 </manifest>

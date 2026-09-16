@@ -9,4 +9,6 @@
     <string name="menu_uninstall">Удалить</string>
     <string name="launch_failed">Не удалось открыть</string>
     <string name="unhidden_toast">%1$s снова на главном экране</string>
+    <string name="home_override">Перехват кнопки Home</string>
+    <string name="home_override_desc">Открывает Mega TV Launcher, когда появляется стоковый главный экран Google TV (кнопка HOME, загрузка). Сток остаётся включённым как страховка.</string>
 </resources>
