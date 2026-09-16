@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings">Настройки</string>
+    <string name="hidden_title">Скрытые приложения</string>
+    <string name="hidden_hint">Нажмите на приложение, чтобы вернуть его на главный экран</string>
+    <string name="no_hidden">Скрытых приложений нет</string>
+    <string name="menu_hide">Скрыть</string>
+    <string name="menu_info">О приложении</string>
+    <string name="menu_uninstall">Удалить</string>
+    <string name="launch_failed">Не удалось открыть</string>
+    <string name="unhidden_toast">%1$s снова на главном экране</string>
+</resources>
