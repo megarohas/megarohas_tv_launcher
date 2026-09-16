@@ -19,7 +19,7 @@
             android:text="@string/hidden_title"
             android:textSize="22sp"
             android:textColor="#FFFFFF"
-            android:fontFamily="sans-serif-light" />
+            android:fontFamily="sans-serif-medium" />
 
         <TextView
             android:layout_width="wrap_content"

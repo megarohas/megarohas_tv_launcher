@@ -51,18 +51,19 @@
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="30sp"
+                android:textSize="28sp"
                 android:textColor="#FFFFFF"
-                android:fontFamily="sans-serif-light"
+                android:fontFamily="sans-serif-medium"
                 android:includeFontPadding="false" />
 
             <TextView
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:textColor="#FFFFFF"
-                android:alpha="0.6" />
+                android:fontFamily="sans-serif"
+                android:alpha="0.65" />
         </LinearLayout>
     </LinearLayout>
 
